@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell
+{% endblock %}
+
+{% block main %}
+    <form action="/sell" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id = "symbol" name="symbol" placeholder="Symbol" type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="quantity" autocomplete="off" placeholder="No. of shares" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Sell</button>
+    </form>
+
+    <div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">No. of shares</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stock in holdings %}
+                    <tr id = "{{stock['symbol']}}" class = "tablerows">
+                        <td>{{stock["symbol"]}}</td>
+                        <td>{{stock["shares"]}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        var elements = document.getElementsByClassName("tablerows");
+        for(var i = 0; i<elements.length; i++) {
+            elements[i].addEventListener('click', function(e) {
+                console.log(this);
+                console.log(this.id);
+                document.getElementById("symbol").value = this.id;
+            });
+        }
+    </script>
+
+
+{% endblock %}

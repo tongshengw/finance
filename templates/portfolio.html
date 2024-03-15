@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+
+{% block friend %}{% endblock %}
+
+    <div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">No. of shares</th>
+                    <th scope="col">Avg buy Price</th>
+                    <th scope="col">Current Price</th>
+                    <th scope="col">Value (USD)</th>
+                    <th scope="col">% Gain</th>
+                    <th scope="col">Unrealised profit/loss (USD)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for holding in holdings %}
+                    <tr>
+                        <td>{{holding["symbol"]}}</td>
+                        <td>{{holding["shares"]}}</td>
+                        <td>{{holding["avg_price"]}}</td>
+                        <td>{{holding["current_price"]}}</td>
+                        <td>{{holding["value"]}}</td>
+                        {% if holding["gain"] > 0 %}
+                            <td style="color:green">{{holding["gain"]}}%</td>
+                            <td style="color:green">{{holding["profit"]}}</td>
+                        {% else %}
+                            <td style="color:red">{{holding["gain"]}}%</td>
+                            <td style="color:red">{{holding["profit"]}}</td>
+                        {%endif%}
+                    </tr>
+                {% endfor %}
+
+                <tr class = "table-secondary">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    {% if pnl >0 %}
+                        <td>{{total_value}}</td>
+                        <td></td>
+                        <td style="color:green">{{pnl}}</td>
+                    {%else%}
+                        <td>= {{total_value}}</td>
+                        <td></td>
+                        <td style="color:red">= {{pnl}}</td>
+                    {%endif%}
+
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+{% endblock %}
