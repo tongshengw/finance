@@ -231,6 +231,8 @@ def friends():
         holdings = db.execute("SELECT * FROM holdings WHERE user_id = ?", friend_id)
         total_value = 0
         pnl = 0
+        balance = db.execute("SELECT cash FROM users WHERE id = ?", friend_id)
+        balance = round(balance[0]["cash"], 2)
         for holding in holdings:
             holding["current_price"] = lookup(holding["symbol"])["price"]
             holding["gain"] = (holding["current_price"]/holding["avg_price"]-1)*100
@@ -245,7 +247,7 @@ def friends():
             total_value += holding["value"]
             pnl += holding["profit"]
 
-        return render_template("/friends.html", friends = friends, holdings=holdings, total_value = total_value, pnl = pnl, friend_username = username)
+        return render_template("/friends.html", friends = friends, holdings=holdings, total_value = total_value, pnl = pnl, friend_username = username, balance = balance)
 
     return render_template("/friendsearch.html")
 
