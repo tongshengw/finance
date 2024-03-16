@@ -106,6 +106,8 @@ def buy():
         # if share not in portfolio
         else:
             db.execute("INSERT INTO holdings (user_id, symbol, shares, avg_price) VALUES (?, ?, ?, ?)", session["user_id"], symbol, quantity, result["price"])
+        
+        db.execute("INSERT INTO history (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)", session["user_id"], symbol, quantity, result["price"])
 
         return render_template("buy.html")
 
@@ -264,9 +266,12 @@ def sell():
     if request.method == "POST":
         symbol = request.form.get("symbol").upper()
         quantity = float(request.form.get("quantity"))
-        price = lookup(symbol)["price"]
+        price = lookup(symbol)
+        price = price["price"]
         currentbalance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
         cash = currentbalance[0]["cash"]
+
+        # print(quantity)
 
         stockaval = False
         quantityaval = 0
@@ -280,8 +285,8 @@ def sell():
             i+=1
 
 
-        print(quantity)
-        print(quantityaval)
+        print(symbol)
+        # print(quantityaval)
 
         if stockaval and quantity < quantityaval:
             # subtract stock quantity from holdings and add money
@@ -294,7 +299,7 @@ def sell():
         else:
             return apology("not enough stock")
         
-        db.execute("INSERT INTO history (user_id, shares, price) VALUES (?, ?, ?)", session["user_id"], quantity, price)   
+        db.execute("INSERT INTO history (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)", session["user_id"], symbol, quantity*(-1), price)   
 
         return redirect("/sell")
 
