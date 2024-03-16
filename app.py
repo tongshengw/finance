@@ -118,8 +118,9 @@ def buy():
 def history():
     """Show history of transactions"""
 
-    
-    return apology("TODO")
+    history = db.execute("SELECT * FROM history WHERE user_id = ?", session["user_id"])
+
+    return render_template("history.html", history = history)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -263,6 +264,9 @@ def sell():
     if request.method == "POST":
         symbol = request.form.get("symbol").upper()
         quantity = float(request.form.get("quantity"))
+        price = lookup(symbol)["price"]
+        currentbalance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
+        cash = currentbalance[0]["cash"]
 
         stockaval = False
         quantityaval = 0
@@ -282,12 +286,15 @@ def sell():
         if stockaval and quantity < quantityaval:
             # subtract stock quantity from holdings and add money
             db.execute("UPDATE holdings SET shares = ? WHERE symbol = ?", round(quantityaval - quantity, 4), symbol)
+            db.execute("UPDATE users SET cash = ? WHERE id = ?", cash + quantity*price, session["user_id"])
 
         elif stockaval and quantity == quantityaval:
             db.execute("DELETE FROM holdings WHERE symbol = ?", symbol)
 
         else:
             return apology("not enough stock")
+        
+        db.execute("INSERT INTO history (user_id, shares, price) VALUES (?, ?, ?)", session["user_id"], quantity, price)   
 
         return redirect("/sell")
 
