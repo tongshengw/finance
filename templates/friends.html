@@ -1,0 +1,16 @@
+{% extends "portfolio.html" %}
+
+{% block title %}
+    Friends
+{% endblock %}
+
+{% block friend %}
+    <form action="/friends" method="post">
+        <div class="mb-3">
+            <input autofocus class="form-control mx-auto w-auto" name="username" placeholder="Friend's username" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Show</button>
+    </form>
+
+    <h1>{{friend_username}}'s Portfolio</h1>
+{% endblock %}
