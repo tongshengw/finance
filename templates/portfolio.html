@@ -7,7 +7,7 @@
 {% block main %}
 
 {% block friend %}{% endblock %}
-<h4>Balance: ${{balance}}, Total value: ${{total_value+balance}}, Total pnl {{((total_value+balance)/10000)|round(3)}}%</h4>
+<h4>Balance: ${{balance}}, Total value: ${{total_value+balance}}, Total pnl {{((((total_value+balance)/10000)-1)*100)|round(3)}}%</h4>
     <div>
         <table class="table table-hover">
             <thead>
