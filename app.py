@@ -40,6 +40,9 @@ def index():
     holdings = db.execute("SELECT * FROM holdings WHERE user_id = ?", session["user_id"])
     total_value = 0
     pnl = 0
+    balance = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])
+    balance = round(balance[0]["cash"], 2)
+    print(balance)
     for holding in holdings:
         holding["current_price"] = lookup(holding["symbol"])["price"]
         holding["gain"] = (holding["current_price"]/holding["avg_price"]-1)*100
@@ -54,11 +57,13 @@ def index():
         total_value += holding["value"]
         pnl += holding["profit"]
 
+        pnl, total_value = round(pnl, 2), round(total_value, 2)
 
 
-    print(holdings)
 
-    return render_template("portfolio.html", holdings=holdings, total_value = total_value, pnl = pnl)
+    # print(holdings)
+
+    return render_template("portfolio.html", holdings=holdings, total_value = total_value, pnl = pnl, balance = balance)
 
 
 @app.route("/buy", methods=["GET", "POST"])
